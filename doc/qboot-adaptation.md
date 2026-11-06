@@ -25,29 +25,26 @@ outside the fork is a build dependency.
 | Change | Files |
 | --- | --- |
 | USART1 hardware selection | `quilla/arch/cpu/arm/py32f040xb/shellport.c`, `shellport.h`, `quilla-qboot-hal.c` |
-| Add `QUILLA_SHELLPORT_USART1` | `user/py32f040xb/EIDE/Makefile.qboot*`, `user/py32f040xb/MDK-ARM/QBOOT.uvprojx` |
+| Keil auto-bin (AfterMake `fromelf`) | `user/py32f040xb/MDK-ARM/QBOOT.uvprojx` |
 
-Inside those three arch/cpu files, the macro selects:
+Inside those three arch/cpu files, the following usart selects:
 
-| Item | Default (reference board) | `QUILLA_SHELLPORT_USART1` |
+| Item | Appliance board| 
 | --- | --- | --- |
-| USART | USART2 | USART1 |
-| TX / RX | PA2 / PA3 | PA9 / PA10 |
-| DMA RX | DMA1_Channel6, `USART2_RD` | DMA1_Channel3, `USART1_RD` |
-| IRQs | `USART2_IRQHandler`, `DMA1_Channel4_5_6_7_IRQHandler` | `USART1_IRQHandler`, `DMA1_Channel2_3_IRQHandler` |
-| Handover cleanup | USART2 / DMA1_Channel6 | USART1 / DMA1_Channel3 |
+| USART | USART1 |
+| TX / RX | PA9 / PA10 |
+| DMA RX | DMA1_Channel3, `USART1_RD` |
+| IRQs | `USART1_IRQHandler`, `DMA1_Channel2_3_IRQHandler` |
+| Handover cleanup | USART1 / DMA1_Channel3 |
 
-Without the macro the same files behave exactly like upstream, so ordinary
-Quilla builds are unaffected.
 
 ### IRQ vector names and SDK files
 
 `SHELLPORT_USART_IRQ` / `SHELLPORT_DMA_IRQ` are C preprocessor macros, not new
 vector names. They appear as `void SHELLPORT_USART_IRQ(void)` in `shellport.c`,
 so preprocessing produces the hardware symbols `USART1_IRQHandler` and
-`DMA1_Channel2_3_IRQHandler` (or the USART2 / `DMA1_Channel4_5_6_7_IRQHandler`
-pair without the macro). The QBOOT startup files already list both pairs in the
-vector table; **no startup file, CMSIS header or HAL driver is modified**.
+`DMA1_Channel2_3_IRQHandler`. The QBOOT startup files already list both pairs
+in the vector table; **no startup file, CMSIS header or HAL driver is modified**.
 `arm-none-eabi-nm` on a built QBOOT shows those two as strong `T` symbols and
 the unused USART2 vector as weak `W`; the map file attributes them to
 `shellport.o`.
@@ -55,12 +52,13 @@ the unused USART2 vector as weak `W`; the map file attributes them to
 The appliance follows the same rule: its GCC and Keil startup files are
 byte-identical to the vendor copies, and `py32f040_it.c` defines the strong
 `USART1_IRQHandler`. When porting to another board, keep MCU SDK files
-untouched and change only `arch/cpu` and the build defines.
+untouched and change only `arch/cpu`.
 
-**Define it in all three QBOOT targets.** Keil targets and EIDE makefiles do
-not inherit each other's defines. A missing define leaves that variant on
-USART2, which looks like "no serial output after flashing" on this board. The
-script patches all six build definitions at once; `--check` verifies them.
+**No build defines are involved.** The USART1 wiring is baked into the
+`shellport.c` macro block, so every QBOOT target (Keil or EIDE) picks it up
+automatically; there is no per-target define to forget. When porting to
+another board, change the macro block and the matching hand-over cleanup in
+`quilla-qboot-hal.c`, then regenerate the patch.
 
 ## 2. Build QBOOT
 

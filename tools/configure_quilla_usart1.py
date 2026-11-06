@@ -6,8 +6,6 @@ The reconfiguration lives ENTIRELY inside the fork:
 
   * ``quilla/arch/cpu/arm/py32f040xb/`` - USART1 / PA9-PA10 / DMA1_Channel3
     in shellport.c/.h and quilla-qboot-hal.c;
-  * ``quilla/user/py32f040xb/`` - the QUILLA_SHELLPORT_USART1 define in every
-    CHECK / SEALED / SEC build target.
 
 QBOOT builds reference ``arch/cpu`` directly, exactly as upstream does. No
 external overlay directory is a build dependency. ``quilla/os/`` is untouched.
@@ -34,16 +32,8 @@ ROOT = Path(__file__).resolve().parent.parent
 QUILLA = ROOT / "quilla"
 PATCH = ROOT / "tools" / "quilla-usart1.patch"
 BASELINE = ROOT / "tools" / ".quilla-usart1-baseline"
-MACRO = "QUILLA_SHELLPORT_USART1"
 
 ARCH_DIR = QUILLA / "arch" / "cpu" / "arm" / "py32f040xb"
-ARCH_FILES = ("shellport.c", "shellport.h", "quilla-qboot-hal.c")
-GCC_MAKEFILES = (
-    QUILLA / "user" / "py32f040xb" / "EIDE" / "Makefile.qboot",
-    QUILLA / "user" / "py32f040xb" / "EIDE" / "Makefile.qboot.sealed",
-    QUILLA / "user" / "py32f040xb" / "EIDE" / "Makefile.qboot.sec",
-)
-KEIL_PROJECT = QUILLA / "user" / "py32f040xb" / "MDK-ARM" / "QBOOT.uvprojx"
 
 
 def git(*args: str) -> subprocess.CompletedProcess[str]:
@@ -94,26 +84,13 @@ def check() -> int:
     print("arch/cpu patch: %s" % ("applied" if applied else "NOT applied"))
     if not applied:
         problems.append("the USART1 patch is not applied to arch/cpu")
-
-    for name in ARCH_FILES:
-        path = ARCH_DIR / name
-        if not path.exists():
-            problems.append("missing %s" % path)
-        elif MACRO not in path.read_text(encoding="utf-8", errors="replace"):
-            problems.append("%s has no USART1 switch" % name)
+    else:
+        shellport_c = ARCH_DIR / "shellport.c"
+        text = shellport_c.read_text(encoding="utf-8", errors="replace")
+        if "#define SHELLPORT_USART            USART1" in text:
+            print("arch/cpu OK  : shellport.c binds USART1 / PA9-PA10 / DMA1_Channel3")
         else:
-            print("arch/cpu OK  : %s" % name)
-
-    for path in (*GCC_MAKEFILES, KEIL_PROJECT):
-        if not path.exists():
-            problems.append("missing %s" % path)
-            continue
-        n = path.read_text(encoding="utf-8", errors="replace").count(MACRO)
-        want = 3 if path == KEIL_PROJECT else 1
-        status = "OK" if n >= want else "MISSING"
-        if n < want:
-            problems.append("%s: %d define(s), expected %d" % (path.name, n, want))
-        print("%-9s: %s (%d define(s))" % (status, path.name, n))
+            problems.append("shellport.c does not bind USART1; regenerate the patch")
 
     if problems:
         print("\nNOT CONFIGURED:")

@@ -17,27 +17,26 @@ python tools/configure_quilla_usart1.py --check
 | 改动 | 文件 |
 | --- | --- |
 | USART1 硬件选择 | `quilla/arch/cpu/arm/py32f040xb/shellport.c`、`shellport.h`、`quilla-qboot-hal.c` |
-| 增加 `QUILLA_SHELLPORT_USART1` | `user/py32f040xb/EIDE/Makefile.qboot*`、`user/py32f040xb/MDK-ARM/QBOOT.uvprojx` |
+| Keil 自动出 bin（AfterMake `fromelf`） | `user/py32f040xb/MDK-ARM/QBOOT.uvprojx` |
 
-这三个 `arch/cpu` 文件内部通过该宏选择：
+`arch/cpu` 文件内部通过配置目标板卡USART：
 
-| 项目 | 默认（参考板） | `QUILLA_SHELLPORT_USART1` |
+| 项目 | 默认（目标板 USART1）|
 | --- | --- | --- |
-| 串口 | USART2 | USART1 |
-| TX / RX | PA2 / PA3 | PA9 / PA10 |
-| RX DMA | DMA1_Channel6，`USART2_RD` | DMA1_Channel3，`USART1_RD` |
-| 中断 | `USART2_IRQHandler`、`DMA1_Channel4_5_6_7_IRQHandler` | `USART1_IRQHandler`、`DMA1_Channel2_3_IRQHandler` |
-| 跳转前清理 | USART2 / DMA1_Channel6 | USART1 / DMA1_Channel3 |
+| 串口 | USART1 |
+| TX / RX | PA9 / PA10 |
+| RX DMA | DMA1_Channel3，`USART1_RD` |
+| 中断 | `USART1_IRQHandler`、`DMA1_Channel2_3_IRQHandler` |
+| 跳转前清理 | USART1 / DMA1_Channel3 |
 
-不定义该宏时，这三个文件与上游行为完全一致，普通 Quilla 构建不受影响。
 
 ### 中断向量名与 MCU SDK 文件
 
-`SHELLPORT_USART_IRQ` / `SHELLPORT_DMA_IRQ` 是 C 预处理宏，**不是新的向量名**。它们以 `void SHELLPORT_USART_IRQ(void)` 的形式出现在 `shellport.c` 中，预处理后生成的仍是硬件符号 `USART1_IRQHandler` 与 `DMA1_Channel2_3_IRQHandler`（不定义宏时则是 USART2 / `DMA1_Channel4_5_6_7_IRQHandler` 那一对）。QBOOT 的 startup 向量表本来就同时列出这两组向量；**startup、CMSIS 头文件、HAL 驱动均未改动**。对编译产物执行 `arm-none-eabi-nm`，这两个符号是强符号 `T`，未使用的 USART2 向量仍是 weak `W`；map 文件标明它们来自 `shellport.o`。
+`SHELLPORT_USART_IRQ` / `SHELLPORT_DMA_IRQ` 是 C 预处理宏，**不是新的向量名**。它们以 `void SHELLPORT_USART_IRQ(void)` 的形式出现在 `shellport.c` 中，预处理后生成的仍是硬件符号 `USART1_IRQHandler` 与 `DMA1_Channel2_3_IRQHandler`。QBOOT 的 startup 向量表本来就同时列出这两组向量；**startup、CMSIS 头文件、HAL 驱动均未改动**。对编译产物执行 `arm-none-eabi-nm`，这两个符号是强符号 `T`，未使用的 USART2 向量仍是 weak `W`；map 文件标明它们来自 `shellport.o`。
 
-appliance 侧同理：GCC 与 Keil 两份 startup 与厂商原文件字节级一致，`py32f040_it.c` 定义强符号 `USART1_IRQHandler`。移植到别的板卡时不要改 MCU SDK 文件，只改 `arch/cpu` 与构建宏。
+appliance 侧同理：GCC 与 Keil 两份 startup 与厂商原文件字节级一致，`py32f040_it.c` 定义强符号 `USART1_IRQHandler`。移植到别的板卡时不要改 MCU SDK 文件，只改 `arch/cpu`。
 
-**三个 QBOOT target 都要定义。** Keil target 与 EIDE Makefile 之间不继承宏；漏掉一个，该变体仍跑 USART2，在本板卡上表现为「烧完没有任何串口输出」。脚本一次性补齐六处定义，`--check` 可逐项核对。
+**不涉及任何构建宏。** USART1 接线固化在 `shellport.c` 顶部宏块，三个 QBOOT target（Keil / EIDE）自动生效，不存在漏定义某处导致串口落在 USART2 的问题。移植到其他板卡时，改宏块及 `quilla-qboot-hal.c` 中对应的跳转前清理，然后重新生成 patch。
 
 ## 2. 编译 QBOOT
 
