@@ -11,7 +11,7 @@
 | 宏定义 | `USE_HAL_DRIVER,PY32F040xB,QAPP_BUILD` |
 | 分散加载 | `.\Objects\Quilla.FR.sct`（Keil 自动生成） |
 | FreeRTOS port | `portable/RVDS/ARM_CM0`（不是 GCC 版） |
-| 构建后 | `fromelf --bin -o "$L\@L.bin" "#L"` → `Output/Quilla.FR.bin` |
+| 构建后 | `fromelf --bin -o "$L\Quilla.FR.bin" "#L"` → `Output/Quilla.FR.bin`（文件名写死：Keil `@L` 会把 `Quilla.FR` 按点截断成 `Quilla`） |
 
 `QAPP_BUILD` 在 `../Src/system_py32f040.c` 中把 VTOR 重定位到 `0x7000`。
 
@@ -43,9 +43,9 @@ UV4.exe -b Quilla.FR.uvprojx -j0 -o build.log
 
 ## 已验证的构建
 
-`UV4 -b` 完成，**0 errors、0 warnings**：`Code=10548 RO-data=444 RW-data=120 ZI-data=12704`，bin 11112 B。二进制中 MSP `0x20003218`（< `0x20004000`，QBOOT 允许跳转）、复位向量 `0x08007151`、偏移 `0x400` 处 `QAV1` 版本 1。用真实 `QBOOT_CHECK.bin` 打包并跑 `tools/qboot_image.py verify` 均通过。
+`UV4 -b` 完成，**0 errors、0 warnings**：`Code=10544 RO-data=444 RW-data=120 ZI-data=12704`，bin 11108 B。二进制中 MSP `0x20003218`（< `0x20004000`，QBOOT 允许跳转）、复位向量 `0x08007151`、偏移 `0x400` 处 `QAV1` 版本 1。用真实 `QBOOT_CHECK.bin` 打包并跑 `tools/qboot_image.py verify` 均通过。
 
-**真机验证（2026-11-06）**：PY32F040 + QBOOT_SEC 下，72 MHz appliance 正常打印 `[QAPP] Quilla.FR V1.0.0001`，发送 `swqboot` 后回到 QBOOT banner，板上 LED（PB2）实测亮 1 秒 / 灭 1 秒。该镜像的完整 QIAP 升级循环仍待验证。
+**真机验证（2026-11-06）**：PY32F040 + QBOOT_SEC 下，72 MHz appliance 正常打印 `[QAPP] Quilla.FR V1.0.0001`，发送 `swqboot` 后回到 QBOOT banner，板上 LED（PB2）实测亮 1 秒 / 灭 1 秒。完整带签名 QIAP 升级（GUI 上位机烧录本镜像 11108 B）连续两次通过 `ACK_SIGN 0x84`，第二次前实抓到 APP→QBOOT 切换，升级闭环成立。
 
 ## 不要混用工具链
 

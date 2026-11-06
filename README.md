@@ -128,7 +128,7 @@ be reviewed line by line.
   secver and pack/verify checks; a `combined.bin` produced from the real
   QBOOT_CHECK binary verifies cleanly.
 - The Keil MDK-ARM project (`appliance/MDK-ARM/Quilla.FR.uvprojx`, AC5) also
-  builds with 0 errors / 0 warnings: bin 11112 B, MSP `0x20003218`, reset
+  builds with 0 errors / 0 warnings: bin 11108 B (`Output/Quilla.FR.bin`), MSP `0x20003218`, reset
   `0x08007151`, secver `QAV1` v1; its binary passes pack/verify too.
 - Decoupling was verified by copying `appliance/` alone into a temporary
   directory with no `quilla/` beside it and rebuilding successfully (12076 B).
@@ -146,8 +146,15 @@ be reviewed line by line.
   `flag=QBOOT` trigger on hardware. The LED task was observed driving the
   board LED (PB2) with a 1 s ON / 1 s OFF beat. SEC re-verifies Ed25519 on
   every boot, so ~20 s of serial silence after `[BOOT]` is expected.
-- Still pending on hardware: a full QIAP upgrade cycle on the 72 MHz image
-  (ENTER / DATA / END / SIGN / ACK_SIGN) followed by the post-reset boot stamp.
+- Full QIAP upgrade cycle verified on hardware (2026-11-06, GUI updater,
+  Keil 72 MHz image, 11108 B, signed): two consecutive upgrades both reached
+  `ACK_SIGN 0x84`, and the serial capture shows the APP -> QBOOT switch
+  (`[QAPP] switching to QBOOT...` -> `[BOOT] ... [SEC]`) before the second
+  upgrade, closing the QBOOT -> APP -> QBOOT loop. Note: the updater reports
+  "no boot banner received" - the appliance banner is composed at runtime, so
+  the stamp string extracted from the image (`[QAPP] switching to QBOOT...`)
+  never appears after reset. The warning is expected and non-fatal; the
+  upgrade itself is confirmed by ACK_SIGN.
 - The repository default keypair (`quilla/tools/_keytest/`) is public. Use it
   for development only; replace it and rebuild QBOOT before any shipment.
 - CHECK verifies transport integrity only. It is not secure boot.

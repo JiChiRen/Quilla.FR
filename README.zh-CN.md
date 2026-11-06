@@ -88,10 +88,10 @@ python tools/configure_quilla_usart1.py
 
 - 已用 `arm-none-eabi-gcc` 13.2 编译通过：appliance `text 11212 / data 24 / bss 13344`；QBOOT CHECK 21280 B、SEALED 21376 B、SEC 21328 B，均在 24 KiB 预算内，三个变体的 USART1 宏均已生效。QBOOT 仍为 48 MHz，appliance 为 72 MHz。
 - 初始 MSP 的链接期 ASSERT 通过；APP bin 通过向量表、secver、打包与校验检查，用真实 QBOOT_CHECK bin 合成的 `combined.bin` 校验通过。
-- Keil MDK-ARM 工程（`appliance/MDK-ARM/Quilla.FR.uvprojx`，AC5）同样编译通过，0 errors / 0 warnings：bin 11112 B、MSP `0x20003218`、复位向量 `0x08007151`、secver `QAV1` v1，其产物也通过打包与校验。
+- Keil MDK-ARM 工程（`appliance/MDK-ARM/Quilla.FR.uvprojx`，AC5）同样编译通过，0 errors / 0 warnings：bin 11108 B（`Output/Quilla.FR.bin`）、MSP `0x20003218`、复位向量 `0x08007151`、secver `QAV1` v1，其产物也通过打包与校验。
 - 解耦已实测：把 `appliance/` 单独复制到旁边没有 `quilla/` 的临时目录，仍能编译出 12076 B 的 bin；两个构建系统的 include 路径全部落在 `appliance/` 内部。
 - `appliance/Src/main.c` 的 `app_clock_init()` 在串口初始化前复位 RCC，再建立 72 MHz 时钟树（HSI 24 MHz + PLL×3，`FLASH_LATENCY_2`）。HAL 用 `SystemCoreClock` 变量计算波特率；若继承 48 MHz 时钟而变量仍是复位值，波特率会变成约 6 倍，启动横幅即为乱码。
 - **真机验证（2026-11-06，PY32F040 + QBOOT_SEC）**：串口依次抓到 `[BOOT] Quilla V0.11.0002 [SEC]`、`[QAPP] Quilla.FR V1.0.0001` 与 `>` 提示符；发送 `swqboot` 后回 `[QAPP] switching to QBOOT...` 并重新打印 `[BOOT] ... [SEC]`。这坐实了 72 MHz 时钟树、115200 串口、SEC 验签、APP 跳转与 META `flag=QBOOT` 触发链路；板上 LED（PB2）由 `led_task` 驱动，实测亮 1 秒 / 灭 1 秒。SEC 每次启动都跑 Ed25519，`[BOOT]` 之后约 20 秒无输出属正常。
-- 仍待真机验证：在 72 MHz 镜像上跑完整 QIAP 升级（ENTER / DATA / END / SIGN / ACK_SIGN）并确认复位后的启动横幅。
+- **完整 QIAP 升级闭环已真机验证（2026-11-06，GUI 上位机，Keil 72 MHz 镜像 11108 B，带签名）**：连续两次升级均 `ACK_SIGN 0x84`；第二次升级前串口实抓到 APP→QBOOT 切换（`[QAPP] switching to QBOOT...` → `[BOOT] ... [SEC]`），QBOOT→APP→QBOOT 闭环成立。上位机提示「未收到启动横幅」属预期：该镜像的开机 banner 是运行时拼接的，镜像里唯一完整的 `[QAPP]` 字面量是 `switching to QBOOT...`，复位后不会出现；升级成功以 ACK_SIGN 为准（CR-0047 起启动戳仅为二次确认）。
 - 仓库默认密钥对（`quilla/tools/_keytest/`）是公开的，仅供开发验证；出货前必须换成自有密钥并重建 QBOOT。
 - CHECK 只校验传输完整性，不构成安全启动。
