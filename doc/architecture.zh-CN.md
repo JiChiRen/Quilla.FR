@@ -20,7 +20,7 @@ quilla/arch/cpu/arm/<mcu>/         时钟、串口、DMA、GPIO、Flash、中断
 quilla/user/<mcu>/                 构建 target（CHECK / SEALED / SEC）。
 ```
 
-改控制台串口不需要动启动策略。本演示的全部硬件适配就是 `arch/cpu` 下三个文件，加上每个构建 target 的一个编译宏。详见 `doc/qboot-adaptation.md`。
+改控制台串口不需要动启动策略。本演示的全部硬件适配就是四个文件：`arch/cpu` 下三个，另加 Keil QBOOT 工程文件。详见 `doc/qboot-adaptation.md`。
 
 APP 侧采用同样的划分：`appliance/Src/recver.c` 负责协议，`py32f040_hal_msp.c` 负责引脚与 DMA 通道。
 

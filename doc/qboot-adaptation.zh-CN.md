@@ -96,7 +96,7 @@ CHECK 下带 `--key` 会在设备已复位进 APP 后再发 SIGN 帧并超时；
 
 ## 6. 同步上游之后
 
-补丁会在 fork 工作树留下 7 个已修改文件，直接 `git pull` 可能冲突。按以下顺序操作：
+补丁会在 fork 工作树留下 4 个已修改文件，直接 `git pull` 可能冲突。按以下顺序操作：
 
 ```
 python tools/configure_quilla_usart1.py --revert   # 还原上游文件

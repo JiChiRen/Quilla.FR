@@ -1,4 +1,14 @@
 /*
+ * Copyright (c) 2026, JiChiRen Info. Tech.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the conditions of the BSD-3
+ * license referenced in the project LICENSE file are met.
+ *
+ * This file is part of the Quilla.FR appliance.
+ */
+/*
  * Quilla.FR appliance - minimal FreeRTOS APP behind Quilla QBOOT.
  *
  * Scope is deliberately the same as Quilla's own QAPP demo (heart-beat LED,

@@ -27,9 +27,9 @@ outside the fork is a build dependency.
 | USART1 hardware selection | `quilla/arch/cpu/arm/py32f040xb/shellport.c`, `shellport.h`, `quilla-qboot-hal.c` |
 | Keil auto-bin (AfterMake `fromelf`) | `user/py32f040xb/MDK-ARM/QBOOT.uvprojx` |
 
-Inside those three arch/cpu files, the following usart selects:
+Inside those three arch/cpu files, the USART1 wiring is:
 
-| Item | Appliance board| 
+| Item | Appliance board |
 | --- | --- | --- |
 | USART | USART1 |
 | TX / RX | PA9 / PA10 |
@@ -151,7 +151,7 @@ the image uncommitted. Match the argument to the QBOOT variant.
 
 ## 6. After an upstream sync
 
-The patch leaves seven modified files in the fork's working tree, so a plain
+The patch leaves four modified files in the fork's working tree, so a plain
 `git pull` can conflict. Use this order:
 
 ```

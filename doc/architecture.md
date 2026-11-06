@@ -24,8 +24,8 @@ quilla/user/<mcu>/                 build targets (CHECK / SEALED / SEC).
 ```
 
 Changing the console UART does not require editing the boot policy. In this
-demo the whole hardware adaptation is three files in `arch/cpu`, plus one
-compile-time define per build target. See `doc/qboot-adaptation.md`.
+demo the whole hardware adaptation is four files: three under `arch/cpu` and
+the Keil QBOOT project file. See `doc/qboot-adaptation.md`.
 
 The same separation holds on the APP side: `appliance/Src/recver.c` owns the
 serial protocol, `py32f040_hal_msp.c` owns pins and DMA channels.

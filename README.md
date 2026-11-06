@@ -60,7 +60,7 @@ all set in that file.
 ```
 git clone -b develop git@github.com:JiChiRen/Quilla.git quilla
 python tools/configure_quilla_usart1.py           # patch quilla/arch/cpu in place
-python tools/configure_quilla_usart1.py --check   # verify all 3 QBOOT targets
+python tools/configure_quilla_usart1.py --check   # verify the patch state
 
 # GCC Arm Embedded toolchain, EIDE makefiles (CHECK shown; .sealed / .sec too)
 make -C quilla/user/py32f040xb/EIDE -f Makefile.qboot
@@ -103,8 +103,9 @@ The host probes the APP with `part` (this APP answers `app1`) and then sends
 ## Keeping the fork in sync
 
 `quilla/` is an ordinary clone with `origin` pointing at upstream. The patch
-leaves seven modified files inside that fork, so revert before pulling, then
-re-apply. QBOOT never references anything outside `quilla/arch/cpu/`:
+leaves four modified files inside that fork (three under `arch/cpu`, plus the
+Keil QBOOT project), so revert before pulling, then re-apply. QBOOT never
+references anything outside `quilla/arch/cpu/`:
 
 ```
 python tools/configure_quilla_usart1.py --revert
@@ -112,17 +113,17 @@ git -C quilla pull
 python tools/configure_quilla_usart1.py
 ```
 
-`--check` compares the recorded upstream HEAD with the current one and reports
-whether the patch has been applied. `git -C quilla status` shows exactly which
+`--check` reports the recorded upstream HEAD, whether the patch is applied,
+and that `shellport.c` binds USART1 / PA9-PA10 / DMA1_Channel3. `git -C quilla status` shows exactly which
 `arch/cpu` and build files the reconfiguration changed. Use `--revert` to
 restore all of them. `tools/quilla-usart1.patch` is a plain git diff and can
 be reviewed line by line.
 
 ## Status and limits
 
-- Built with `arm-none-eabi-gcc` 13.2: appliance `text 11212 / data 24 /
+- Built with `arm-none-eabi-gcc` 13.2: appliance `text 11208 / data 24 /
   bss 13344`; QBOOT CHECK 21280 B, SEALED 21376 B, SEC 21328 B (all below the
-  24 KiB budget). The USART1 define is active in all three variants. QBOOT is
+  24 KiB budget, all built with the USART1 wiring). QBOOT is
   still 48 MHz; the appliance is 72 MHz.
 - The linker ASSERT for the initial MSP passes. The APP binary passes vector,
   secver and pack/verify checks; a `combined.bin` produced from the real
@@ -131,7 +132,7 @@ be reviewed line by line.
   builds with 0 errors / 0 warnings: bin 11108 B (`Output/Quilla.FR.bin`), MSP `0x20003218`, reset
   `0x08007151`, secver `QAV1` v1; its binary passes pack/verify too.
 - Decoupling was verified by copying `appliance/` alone into a temporary
-  directory with no `quilla/` beside it and rebuilding successfully (12076 B).
+  directory with no `quilla/` beside it and rebuilding successfully (12072 B).
   Both build systems have include paths only inside `appliance/`.
 - `app_clock_init()` in `appliance/Src/main.c` resets RCC and builds a 72 MHz
   tree (HSI 24 MHz + PLL x3, `FLASH_LATENCY_2`) before any UART setup. The HAL
