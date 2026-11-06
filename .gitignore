@@ -1,0 +1,33 @@
+# quilla/ is an independent clone of github.com/JiChiRen/Quilla (develop).
+# It is deliberately NOT part of this repository: keep it pullable at any time.
+/quilla/
+
+# Build products
+/appliance/gcc/build/
+*.o
+*.d
+*.lst
+*.elf
+*.map
+*.bin
+*.hex
+
+# Python
+__pycache__/
+*.pyc
+
+# Recorded upstream HEAD for the arch/cpu patch
+/tools/.quilla-usart1-baseline
+
+# Keil MDK-ARM build products
+/appliance/MDK-ARM/Objects/
+/appliance/MDK-ARM/Output/
+*.uvoptx
+*.uvguix.*
+*.axf
+*.sct
+*.lnp
+*.htm
+/appliance/MDK-ARM/build_cli.log
+/appliance/MDK-ARM/DebugConfig/
+/appliance/MDK-ARM/RTE/
