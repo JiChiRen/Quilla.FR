@@ -34,6 +34,10 @@ QBOOT 的串口位于 `quilla/arch/cpu/arm/<mcu>/`，不属于启动策略层。
 | META | `0x08006000` | 4 KiB（双 2 KiB slot，记录 256 B） |
 | APP | `0x08007000` | 100 KiB |
 
+`tools/qboot_image.py` 中的容量按 PY32F040xB（128 KiB Flash / 16 KiB SRAM）
+固化。移植到其它 MCU 时，常量表、QBOOT 与 APP 侧必须同步修改的位置，以及与
+Quilla.ZP（GD32F502VE）的对照，见 [doc/mcu-porting.zh-CN.md](doc/mcu-porting.zh-CN.md)。
+
 ## 快速开始
 
 ```

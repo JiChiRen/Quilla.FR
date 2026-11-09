@@ -4,6 +4,13 @@
 record (QMTL + QMF1) and merges QBOOT, META and APP into one 128 KiB image
 starting at `0x08000000`, ready for a full-chip erase and a single flash.
 
+**The 128 KiB / 16 KiB dimensions are MCU-specific.** When porting to another
+part, change `FLASH_SIZE`, `APP_SIZE` and `RAM_SIZE` in `tools/qboot_image.py`
+and update the matching QBOOT and APP definitions. `RAM_SIZE` is the upper
+bound of the initial-MSP check, and `FLASH_SIZE` is the exact length of the
+produced image. See [MCU porting guide](mcu-porting.md) for the full constant
+table, the Quilla.ZP (GD32F502VE) comparison and the synchronisation checklist.
+
 ## Commands
 
 ```

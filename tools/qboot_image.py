@@ -47,6 +47,10 @@ import sys
 import zlib
 
 # ---------------------------------------------------------------- 分区常量
+# PY32F040xB: 128 KiB Flash @0x08000000, 16 KiB SRAM @0x20000000.
+# 改芯片时必须同步修改 FLASH_SIZE / APP_SIZE / RAM_SIZE，并同步 QBOOT 侧的
+# SOC_FLASH_END、QUILLA_QBOOT_RAM_SIZE、QUILLA_QBOOT_PAGE_SIZE，以及 APP 侧的
+# 链接脚本与 META 写入页常量。完整清单见 doc/mcu-porting.zh-CN.md。
 FLASH_BASE = 0x08000000
 FLASH_SIZE = 0x00020000
 QBOOT_SIZE = 0x00006000

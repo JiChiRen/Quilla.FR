@@ -55,6 +55,12 @@ all set in that file.
 | META | `0x08006000` | 4 KiB (dual 2 KiB slots, 256 B records) |
 | APP | `0x08007000` | 100 KiB |
 
+`tools/qboot_image.py` hard-codes these dimensions for PY32F040xB
+(128 KiB Flash / 16 KiB SRAM). For another MCU, see
+[doc/mcu-porting.md](doc/mcu-porting.md) for the constant table, the
+QBOOT/APP definitions that must be updated together, and the Quilla.ZP
+(GD32F502VE) comparison.
+
 ## Quick start
 
 ```

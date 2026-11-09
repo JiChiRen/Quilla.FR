@@ -2,6 +2,12 @@
 
 `qboot_image.py` 只依赖 Python 标准库。它生成首片 META 记录（QMTL + QMF1），把 QBOOT、META、APP 合成一个从 `0x08000000` 起始的 128 KiB 镜像，用于整片擦除后一次烧录。
 
+**128 KiB / 16 KiB 是芯片相关配置。** 移植到其它型号时，需修改
+`tools/qboot_image.py` 的 `FLASH_SIZE`、`APP_SIZE`、`RAM_SIZE`，并同步 QBOOT
+与 APP 侧的对应定义：`RAM_SIZE` 是初始 MSP 校验的上界，`FLASH_SIZE` 是产出镜像
+的精确长度。完整常量表、与 Quilla.ZP（GD32F502VE）的对照以及同步清单见
+[MCU 移植说明](mcu-porting.zh-CN.md)。
+
 ## 命令
 
 ```
