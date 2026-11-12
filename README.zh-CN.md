@@ -52,7 +52,7 @@ make -C appliance/gcc
 
 APP 任选一条构建路径。Keil uVision 使用 ARM Compiler 5：打开 `appliance/MDK-ARM/Quilla.FR.uvprojx` 按 F7，或在该目录执行 `UV4.exe -b Quilla.FR.uvprojx -j0 -o build.log`。详见 `appliance/MDK-ARM/README.md`。
 
-用 `Makefile.qboot.sealed` / `Makefile.qboot.sec` 编译另外两个 QBOOT 变体，再合成出厂镜像：
+用 `Makefile.qboot.sealed` / `Makefile.qboot.secured` 编译另外两个 QBOOT 变体，再合成出厂镜像：
 
 ```
 python tools/qboot_image.py pack \
