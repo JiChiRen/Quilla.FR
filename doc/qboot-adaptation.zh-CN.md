@@ -83,11 +83,11 @@ CHECK 未编入公钥，END 直接提交，完成码是 `ACK_END 0x83`。SEALED 
 
 ```
 # CHECK
-python quilla/tools/quilla_host_updater.py COM7 \
+python quilla/tools/quilla_host_updater.py COMx \
     appliance/gcc/build/quilla-fr-app.bin
 
 # SEALED / SEC
-python quilla/tools/quilla_host_updater.py COM7 \
+python quilla/tools/quilla_host_updater.py COMx \
     appliance/gcc/build/quilla-fr-app.bin \
     --key quilla/tools/_keytest/private.hex
 ```

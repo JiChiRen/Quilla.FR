@@ -67,7 +67,7 @@ python tools/qboot_image.py verify --image combined.bin
 从运行中的 APP 串口升级：
 
 ```
-python quilla/tools/quilla_host_updater.py COM7 \
+python quilla/tools/quilla_host_updater.py COMx \
     appliance/gcc/build/quilla-fr-app.bin
 ```
 

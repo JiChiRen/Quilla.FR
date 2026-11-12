@@ -95,7 +95,7 @@ board prints `[QAPP] Quilla.FR V1.0.0001` and blinks the user LED.
 Serial upgrade from the running APP:
 
 ```
-python quilla/tools/quilla_host_updater.py COM7 \
+python quilla/tools/quilla_host_updater.py COMx \
     appliance/gcc/build/quilla-fr-app.bin
 ```
 

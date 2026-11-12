@@ -136,11 +136,11 @@ SIGN must follow, with completion code `ACK_SIGN 0x84`.
 
 ```
 # CHECK
-python quilla/tools/quilla_host_updater.py COM7 \
+python quilla/tools/quilla_host_updater.py COMx \
     appliance/gcc/build/quilla-fr-app.bin
 
 # SEALED / SEC
-python quilla/tools/quilla_host_updater.py COM7 \
+python quilla/tools/quilla_host_updater.py COMx \
     appliance/gcc/build/quilla-fr-app.bin \
     --key quilla/tools/_keytest/private.hex
 ```
