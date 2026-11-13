@@ -99,3 +99,16 @@ python tools/configure_quilla_usart1.py
 - **完整 QIAP 升级闭环已真机验证（2026-11-06，GUI 上位机，Keil 72 MHz 镜像 11108 B，带签名）**：连续两次升级均 `ACK_SIGN 0x84`；第二次升级前串口实抓到 APP→QBOOT 切换（`[QAPP] switching to QBOOT...` → `[BOOT] ... [SEC]`），QBOOT→APP→QBOOT 闭环成立。上位机提示「未收到启动横幅」属预期：该镜像的开机 banner 是运行时拼接的，镜像里唯一完整的 `[QAPP]` 字面量是 `switching to QBOOT...`，复位后不会出现；升级成功以 ACK_SIGN 为准（CR-0047 起启动戳仅为二次确认）。
 - 仓库默认密钥对（`quilla/tools/_keytest/`）是公开的，仅供开发验证；出货前必须换成自有密钥并重建 QBOOT。
 - CHECK 只校验传输完整性，不构成安全启动。
+
+## 许可与归属
+
+本仓库自有文件采用 BSD-3（见 `LICENSE`）。`appliance/` 下随仓库分发的第三方
+代码保留各自的原始版权与许可头：FreeRTOS 内核（MIT，Amazon.com）、Puya
+PY32F040 HAL / BSP / CMSIS device 头（BSD-3，部分文件同时含 STMicroelectronics
+的 BSD-3 声明）、Arm CMSIS core 头（条款以各文件标记为准）。完整归属见
+[`NOTICE`](NOTICE)。
+
+`quilla/` 是 `JiChiRen/Quilla`（BSD-3）的独立 clone，由 `.gitignore` 排除，
+**本仓库不重新分发**，需按上文命令单独克隆。对该 clone 的 QBOOT 侧改动记录在
+`tools/quilla-usart1.patch`；`tools/configure_quilla_usart1.py --check` 可查看
+记录的上游 HEAD。Quilla.FR 是独立参考设计，未获上述上游项目背书。

@@ -165,3 +165,19 @@ be reviewed line by line.
 - The repository default keypair (`quilla/tools/_keytest/`) is public. Use it
   for development only; replace it and rebuild QBOOT before any shipment.
 - CHECK verifies transport integrity only. It is not secure boot.
+
+## License & attribution
+
+Files owned by this repository are BSD-3 (see `LICENSE`). Third-party code
+vendored under `appliance/` keeps its original copyright and license headers:
+the FreeRTOS core (MIT, Amazon.com), the Puya PY32F040 HAL / BSP / CMSIS
+device headers (BSD-3, some also carrying STMicroelectronics' BSD-3 notice),
+and Arm CMSIS core headers (terms as marked in each file). See
+[`NOTICE`](NOTICE) for the full attribution.
+
+`quilla/` is an independent clone of `JiChiRen/Quilla` (BSD-3), excluded by
+`.gitignore` and **not redistributed by this repository**; clone it separately
+as described above. The QBOOT-side changes applied to that clone are recorded
+in `tools/quilla-usart1.patch`, and `tools/configure_quilla_usart1.py --check`
+reports the recorded upstream HEAD. Quilla.FR is an independent reference
+design and is not endorsed by the upstream projects named here.

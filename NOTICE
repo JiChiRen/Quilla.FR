@@ -1,0 +1,58 @@
+Quilla.FR
+Copyright (c) 2026 JiChiRen Info. Tech.
+
+================================================================================
+English
+================================================================================
+
+Files owned by this repository are distributed under the 3-clause BSD
+license (see LICENSE).
+
+Third-party code under appliance/ is vendored in this repository and keeps
+its original copyright and license headers. Each file's own header is
+authoritative. The main sources are:
+
+- FreeRTOS core (appliance/Middlewares/Third_Party/FreeRTOS/): MIT license,
+  Copyright (C) 2020/2021 Amazon.com, Inc. or its affiliates.
+- Puya PY32F040 HAL, BSP and CMSIS device headers (appliance/Drivers/):
+  BSD-3-Clause, Copyright (c) 2023 Puya Semiconductor Co. Many of these
+  files additionally carry "Copyright (c) 2016 STMicroelectronics", also
+  under BSD-3-Clause, inherited from the ST CMSIS template.
+- Arm CMSIS core headers (appliance/Drivers/CMSIS/): Copyright (c) 2009-2020
+  Arm Limited, with IAR Systems notices on some headers. License terms are
+  marked per file (Apache-2.0 / BSD-3-Clause as stated in each header).
+
+quilla/ is an independent, untracked clone of JiChiRen/Quilla (BSD-3). It is
+excluded by .gitignore and is NOT redistributed by this repository; it must be
+cloned separately (see README.md). QBOOT-side modifications to that clone are
+recorded in tools/quilla-usart1.patch.
+
+Quilla.FR is an independent reference design. It is not endorsed by,
+sponsored by, or affiliated with the upstream projects named above. Upstream
+names are used solely to state the factual origin of the code.
+
+================================================================================
+中文
+================================================================================
+
+本仓库自有文件按 3-clause BSD 许可分发（见 LICENSE）。
+
+appliance/ 下的第三方代码随本仓库分发，并保留各自的原始版权与许可头，
+具体条款以各文件自身的文件头为准。主要来源：
+
+- FreeRTOS 内核（appliance/Middlewares/Third_Party/FreeRTOS/）：MIT 许可，
+  Copyright (C) 2020/2021 Amazon.com, Inc. 或其关联公司。
+- Puya PY32F040 HAL、BSP 与 CMSIS device 头（appliance/Drivers/）：
+  BSD-3-Clause，Copyright (c) 2023 Puya Semiconductor Co.；其中不少文件
+  另含「Copyright (c) 2016 STMicroelectronics」的同为 BSD-3-Clause 声明，
+  系沿用 ST CMSIS 模板所致。
+- Arm CMSIS core 头（appliance/Drivers/CMSIS/）：Copyright (c) 2009-2020
+  Arm Limited，部分头含 IAR Systems 声明；许可条款以各文件标记为准
+  （Apache-2.0 / BSD-3-Clause）。
+
+quilla/ 是 JiChiRen/Quilla（BSD-3）的独立、不跟踪 clone，由 .gitignore
+排除，**本仓库不重新分发**，需按 README.md 单独克隆。对该 clone 的 QBOOT 侧
+改动记录在 tools/quilla-usart1.patch。
+
+Quilla.FR 为独立参考设计，未获上述上游项目背书、赞助，也不存在隶属关系；
+提及上游名称仅用于如实说明代码来源。
